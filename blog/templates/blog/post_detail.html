@@ -50,7 +50,18 @@
                         <!-- Post content-->
                         <section class="mb-5">
                             <p class="fs-5 mb-4">{{post.content}}</p>
+                            <hr/>
+                            {% if post.file_upload %}<a href="{{post.file_upload.url}}" class="btn btn-outline-dark" role="button" download>
+                            Download:{% if post.get_file_ext == 'csv' or post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls'%}
+                            <i class="fa-regular fa-file-excel"></i>
+                            {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc'%}
+                            <i class="fa-regular fa-file-word"></i>
+                            {% else %}
+                            <i class="fa-regular fa-file"></i>
+                            {% endif %}{{ post.get_file_name }}
+                        </a>{% endif %}
                         </section>
+
                     </article>
                     <!-- Comments section-->
                     <section class="mb-5">
@@ -141,7 +152,7 @@
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p></div>
         </footer>
-
+    <script src="https://kit.fontawesome.com/8f7a58d97e.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/8f7a58d97e.js" crossorigin="anonymous"></script>
