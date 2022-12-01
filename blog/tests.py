@@ -12,7 +12,7 @@ class TestView(TestCase):
 
     def test_post_list(self):
         # 포스트 목록 페이지 가져오기
-        response = self.client.get()
+        response = self.client.get('/blog/')
         # 정상적으로 페이지 로드된다
         self.assertEqual(response.status_code, 200)
         # 페이지 타이틀은 'Blog' 이다
@@ -20,7 +20,7 @@ class TestView(TestCase):
         # 내비게이션 바가 있다
         navbar = soup.nav
         # blog,about me 라는 문구가 내비게이션바에 있다
-        self.assertIn("blog", navbar.text)
+        self.assertIn("Blog", navbar.text)
         self.assertIn("About ME", navbar.text)
         #
         # 메인영역에 게시물이 하나도 없다면
@@ -64,8 +64,8 @@ class TestView(TestCase):
         soup = BeautifulSoup(response.content, "html.parser")
 
         navbar = soup.nav
-        self.assertIn('blog', navbar.text)
-        self.assertIn('About me', navbar.text)
+        self.assertIn('Blog', navbar.text)
+        self.assertIn('About ME', navbar.text)
 
         self.assertIn(post_001.title, soup.title.text)
 
