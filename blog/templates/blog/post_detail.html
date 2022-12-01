@@ -5,6 +5,11 @@
 {% block main_area %}
                     <!-- Post content-->
                     <div id="post-area">
+                        {% if post.category %}
+                                <span class="badge-secondary float-right">{{post.category}}</span>
+                                {% else %}
+                                <span class="badge-secondary float-right">미분류</span>
+                                {% endif %}
                     <article>
                         <!-- Post header-->
                         <header class="mb-4">
