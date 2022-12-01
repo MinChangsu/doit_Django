@@ -10,6 +10,23 @@ class TestView(TestCase):
     def setUp(self):
         self.client = Client()
 
+    def navbar_test(self,soup):
+        navbar = soup.nav
+        self.assertIn('Blog', navbar.text)
+        self.assertIn("About ME", navbar.text)
+
+        logo_btn = navbar.find('a', text='MR Class')
+        self.assertEqual(logo_btn.attrs['href'], '/')
+
+        home_btn = navbar.find('a', text='Home')
+        self.assertEqual(home_btn.attrs['href'], '/')
+
+        blog_btn = navbar.find('a', text='Blog')
+        self.assertEqual(blog_btn.attrs['href'], '/blog/')
+
+        about_me_btn = navbar.find('a', text='About ME')
+        self.assertEqual(about_me_btn.attrs['href'], '/about_me/')
+
     def test_post_list(self):
         # 포스트 목록 페이지 가져오기
         response = self.client.get('/blog/')
@@ -18,10 +35,7 @@ class TestView(TestCase):
         # 페이지 타이틀은 'Blog' 이다
         soup = BeautifulSoup(response.content, "html.parser")
         # 내비게이션 바가 있다
-        navbar = soup.nav
-        # blog,about me 라는 문구가 내비게이션바에 있다
-        self.assertIn("Blog", navbar.text)
-        self.assertIn("About ME", navbar.text)
+        self.navbar_test(soup)
         #
         # 메인영역에 게시물이 하나도 없다면
         self.assertEqual(Post.objects.count(), 0)
@@ -63,12 +77,11 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, "html.parser")
 
-        navbar = soup.nav
-        self.assertIn('Blog', navbar.text)
-        self.assertIn('About ME', navbar.text)
-
+        self.navbar_test(soup)
         self.assertIn(post_001.title, soup.title.text)
 
         main_area = soup.find('div', id='main-area')
         post_area = main_area.find('div', id='post-area')
         self.assertIn(post_001.content, post_area.text)
+
+
