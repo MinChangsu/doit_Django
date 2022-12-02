@@ -12,6 +12,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return f'/blog/category/{self.slug}/'
+
     class Meta:
         verbose_name_plural = 'Categories'
 
@@ -38,5 +41,3 @@ class Post(models.Model):
 
     def get_file_ext(self):
         return self.get_file_name().split(".")[-1]
-
-
