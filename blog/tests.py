@@ -174,47 +174,45 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('아직 게시물이 없습니다.', main_area.text)
 
-        # # 포스트 목록 페이지 가져오기
-        # response = self.client.get('/blog/')
-        # # 정상적으로 페이지 로드된다
-        # self.assertEqual(response.status_code, 200)
-        # # 페이지 타이틀은 'Blog' 이다
-        # soup = BeautifulSoup(response.content, "html.parser")
-        # # 내비게이션 바가 있다
-        # self.navbar_test(soup)
-        # #
-        # # 메인영역에 게시물이 하나도 없다면
-        # self.assertEqual(Post.objects.count(), 0)
-        #
-        # # 아직 게시물이 없습니다라는 문구가 보인다
-        # main_area = soup.find('div', id='main-area')
-        # self.assertIn("아직 게시물이 없습니다.", main_area.text)
-        #
-        # # 게시물이 2개 있다면
-        # post_001 = Post.objects.create(
-        #     title='첫번쨰 포스트',
-        #     content="hello world we are the world",
-        #     author=self.user_trump
-        # )
-        # post_002 = Post.objects.create(
-        #     title='두번쨰 포스트',
-        #     content="1등이 전부는 아니잖아요?",
-        #     author=self.user_obama
-        # )
-        # self.assertEqual(Post.objects.count(), 2)
-        # # 포스트 목록 페이지를 새로고침했을때
-        # response = self.client.get('/blog/')
-        # soup = BeautifulSoup(response.content, "html.parser")
-        # self.assertEqual(response.status_code, 200)
-        # # 메인 영역에 포스트2개의 타이틀이 존재한다
-        # main_area = soup.find('div', id='main-area')
-        # self.assertIn(post_001.title, main_area.text)
-        # self.assertIn(post_002.title, main_area.text)
-        # # 아직 게시물이 없습니다 라는 문구는 더이상 보이지 않는다.
-        # self.assertNotIn('아직 게시물이 없습니다.', main_area.text)
-        #
-        # self.assertIn(self.user_trump.username.upper(), main_area.text)
-        # self.assertIn(self.user_obama.username.upper(), main_area.text)
+    def test_update_post(self):
+        update_post_url = f'/blog/update_post/{self.post_003.pk}/'
+        # 로그인하지 않은 경우
+        response = self.client.get(update_post_url)
+        self.assertNotEqual(response.status_code, 200)
+        # 로그인했지만 작성자가 아닌경우
+        self.assertNotEqual(self.post_003.author, self.user_trump)
+        self.client.login(
+            username=self.user_trump.username,
+            password='somepassword'
+        )
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 403)
+        # 작성자가(오바마) 접근
+        self.client.login(
+            username=self.post_003.author.username,
+            password='somepassword')
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertEqual('Edit Post - Blog', soup.title.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Edit Post', main_area.text)
+
+        response = self.client.post(
+            update_post_url, {
+                'title': '세 번째 포스트를 수정했습니다.',
+                'content': '안녕 세계? 우리는 하나',
+                'category': self.category_music.pk
+
+            },
+            follow=True
+        )
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_area = soup.find('div', id="main-area")
+        self.assertIn('세 번째 포스트를 수정했습니다.', main_area.text)
+        self.assertIn('안녕 세계? 우리는 하나', main_area.text)
+        self.assertIn(self.category_music.name, main_area.text)
 
     def test_post_detail(self):
         self.assertEqual(self.post_001.get_absolute_url(), '/blog/1/')
