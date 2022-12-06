@@ -100,7 +100,7 @@
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="deleteModalLabel">Are You Sure?</h5>
+                                                        <h5 class="modal-title" id="deleteModalLabel">진짜 지울꺼임?</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -118,7 +118,7 @@
                                         {% endif %}
                                         <div class="fw-bold">{{ comment.author.username }} &nbsp;&nbsp; <small class="text-muted">{{ comment.created_at }}</small></div>
                                         <p>{{ comment.content  | linebreaks }}</p>
-                                        {% if comment.created_at != comment.modified_at %}
+                                        {% if comment.get_delta_time %}
                                             <p class="text-muted float-right"><small>Updated: {{ comment.modified_at }}</small></p>
                                         {% endif %}
                                     </div>
@@ -127,7 +127,7 @@
                                 {% endfor %}
                                 {% endif %}
                             </div>
-                            <hr/>
+
 
                         </div>
                     </section>

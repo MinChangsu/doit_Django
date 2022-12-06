@@ -83,4 +83,8 @@ class Comment(models.Model):
         if self.author.socialaccount_set.exists():
             return self.author.socialaccount_set.first().get_avatar_url()
         else:
-            return f'https://doitdjango.com/avatar/id/1374/ec5c2026bd411255/svg/guest@email.com{self.author.email}'
+            return f'https://doitdjango.com/avatar/id/1374/ec5c2026bd411255/svg/{self.author.email}'
+
+    def get_delta_time(self):  # 추가
+        delta_time = (self.modified_at - self.created_at).seconds
+        return delta_time

@@ -156,10 +156,10 @@ def new_comment(request, pk):
                 comment.author = request.user
                 comment.save()
                 return redirect(comment.get_absolute_url())
-            else:
-                return redirect(post.get_absolute_url())
         else:
-            raise PermissionDenied
+            return redirect(post.get_absolute_url())
+    else:
+        raise PermissionDenied
 
 
 class CommentUpdate(LoginRequiredMixin, UpdateView):
