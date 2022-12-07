@@ -1,11 +1,24 @@
 version: '3'
 
 services:
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/usr/src/app/_static
+      - media_volume:/usr/src/app/_media
+    ports:
+      - 80:80
+    depends_on:
+      - web
   web:
     build: .
     command: gunicorn doit_django_prj.wsgi:application --bind 0.0.0.0:8000
     volumes:
+      - static_volume:/usr/src/app/_static
+      - media_volume:/usr/src/app/_media
       - ./:/usr/src/app/
+    expose:
+      - 8000
     ports:
       - 8000:8000
     env_file:
@@ -20,3 +33,5 @@ services:
       - ./.env.prod.db
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
